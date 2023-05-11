@@ -1,0 +1,10 @@
+{
+  "SubscriptionId": {
+    "type": "String",
+    "value": "@appsetting('SubscriptionId')"
+  },
+  "ResourceGroupName": {
+    "type": "String",
+    "value": "@appsetting('ResourceGroupName')"
+  }
+}

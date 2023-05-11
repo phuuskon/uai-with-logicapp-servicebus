@@ -2,6 +2,8 @@ param location string
 param commonName string
 param shortLocation string
 param connectionRuntimeUrl string
+param miName string
+param miId string
 
 resource laStorage 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: 'st${commonName}${shortLocation}'
@@ -29,7 +31,10 @@ resource la 'Microsoft.Web/sites@2022-09-01' = {
   location: location
   kind: 'functionapp,workflowapp'
   identity: {
-    type: 'SystemAssigned'
+    type: 'SystemAssigned, UserAssigned'
+    userAssignedIdentities: {
+      '/subscriptions/${subscription().subscriptionId}/resourcegroups/${resourceGroup().name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${miName}': {}
+    }
   }
   properties: {
     serverFarmId: laAppPlan.id
@@ -53,6 +58,7 @@ resource laConfig 'Microsoft.Web/sites/config@2022-09-01' = {
     ServiceBusConnectionRuntimeUrl: connectionRuntimeUrl
     ResourceGroupName: resourceGroup().name
     SubscriptionId: subscription().subscriptionId
+    UserAssignedIdentity: miId
   }
 }
 

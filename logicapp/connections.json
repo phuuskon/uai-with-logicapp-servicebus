@@ -14,7 +14,8 @@
       "connectionProperties": {
         "authentication": {
           "audience": "https://servicebus.azure.net",
-          "type": "ManagedServiceIdentity"
+          "type": "ManagedServiceIdentity",
+          "identity": "/subscriptions/8b05dfa7-2df9-42ef-9332-2fbd194aadca/resourcegroups/rg-phlatest/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mi-phlatest-we"
         }
       }
     }

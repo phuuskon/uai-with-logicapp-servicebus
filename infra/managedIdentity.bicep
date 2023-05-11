@@ -8,3 +8,5 @@ resource mi 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
 }
 
 output name string = mi.name
+output principalId string = mi.properties.principalId
+output id string = mi.id

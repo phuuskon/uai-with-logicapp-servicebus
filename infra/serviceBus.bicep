@@ -20,3 +20,5 @@ resource sub 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2021-11-01' =
   parent: topic
   name: 'test-sub'
 }
+
+output id string = sb.id

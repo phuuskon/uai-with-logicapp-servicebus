@@ -12,7 +12,6 @@
                     },
                     "method": "post",
                     "body": {
-                        "SessionId": "test-sub",
                         "ContentData": "@{base64(triggerBody())}"
                     },
                     "path": "/@{encodeURIComponent(encodeURIComponent('test-topics'))}/messages",

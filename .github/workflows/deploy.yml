@@ -18,6 +18,8 @@ jobs:
           template: ./infra/main.bicep
           parameters: 'location=westeurope shortLocation=we'
           failOnStdErr: false
-      - run: echo ${{ steps.deploy_infra.outputs.miPrincipalId }}
-
-  
+      - name: give mi access to sb
+        uses: azure/CLI@v1
+        with: 
+          inlineScript: az role assignment create --assignee ${{ steps.deploy_infra.outputs.miPrincipalId }} --role "Azure Service Bus Data Owner" --scope ${{ steps.deploy_infra.outputs.sbId }}
+      

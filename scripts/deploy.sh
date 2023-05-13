@@ -19,7 +19,7 @@ echo "Give access to service bus"
 az role assignment create --assignee $miPrincipalId --role "Azure Service Bus Data Owner" --scope $sbId
 
 echo "Deploy workflows"
-
+#todo
 
 echo "Workflows deployed"
 echo "All done!"

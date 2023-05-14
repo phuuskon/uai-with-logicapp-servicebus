@@ -52,7 +52,7 @@ jobs:
               -Name ${{ steps.deploy_infra.outputs.laName }}
             $profile = $profile.Replace("`r", "").Replace("`n", "")
             Write-Output "::set-output name=profile::$profile"
-         a zPSVersion: latest
+          azPSVersion: latest
       - uses: actions/download-artifact@master
         with:
           name: build-artifact

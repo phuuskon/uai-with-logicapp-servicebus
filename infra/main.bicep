@@ -53,3 +53,4 @@ module apiconAccessPolicy 'apicon-serviceBus-accessPolicies.bicep' = {
 
 output miPrincipalId string = mi.outputs.principalId
 output sbId string = sb.outputs.id
+output laName string = la.outputs.laName

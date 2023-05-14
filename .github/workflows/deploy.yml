@@ -22,4 +22,35 @@ jobs:
         uses: azure/CLI@v1
         with: 
           inlineScript: az role assignment create --assignee ${{ steps.deploy_infra.outputs.miPrincipalId }} --role "Azure Service Bus Data Owner" --scope ${{ steps.deploy_infra.outputs.sbId }}
+      - name: zip workflows
+        uses: vimtor/action-zip@1
+        with:
+          dest: ${{ github.run_id }}.zip
+          files: ./logicapp/
+      - uses: actions/upload_artifact@master
+        with:
+          name: build-artifact
+          path: ${{ github.run_id }}.zip
+      - name: get publish profile
+        id: la_app
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            $profile = Get-AzWebAppPublishingProfile `
+              -ResourceGroupName ${{ secrets.AZURE_RG }}`
+              -Name ${{ steps.deploy_infra.outputs.laName }}
+            $profile = $profile.Replace("`r", "").Replace("`n", "")
+            Write-Output "::set-output name=profile::$profile"
+         a zPSVersion: latest
+      - uses: actions/download-artifact@master
+        with:
+          name: build-artifact
+          path: build-artifact/
+      - name: deploy to azure logicapp
+        uses: Azure/functions-action@v1
+        id: la
+        with:
+          app-name: ${{ steps.deploy_infra.outputs.laName }}
+          package: built_artifact/${{ github.run_id }}.zip
+          publish-profile: ${{steps.la_app.outputs.profile}}
       

@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       laName: ${{ steps.deploy_infra.outputs.laName }}
+      miName: ${{ steps.deploy_infra.outputs.miName }}
     steps:
       - uses: actions/checkout@main
       - uses: azure/login@v1

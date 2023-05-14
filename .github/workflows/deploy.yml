@@ -24,6 +24,7 @@ jobs:
           inlineScript: az role assignment create --assignee ${{ steps.deploy_infra.outputs.miPrincipalId }} --role "Azure Service Bus Data Owner" --scope ${{ steps.deploy_infra.outputs.sbId }}
   BuildSolution:
     runs-on: ubuntu-latest
+    needs: [DeployInfra]
     steps:  
       - uses: actions/checkout@main  
       - name: zip workflows
@@ -37,6 +38,7 @@ jobs:
           path: ${{ github.run_id }}.zip
   DeploySolution:
     runs-on: ubuntu-latest
+    needs: [BuildSolution]
     steps:
       - uses: azure/login@v1
         with:

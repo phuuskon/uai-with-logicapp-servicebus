@@ -27,7 +27,7 @@ jobs:
     steps:  
       - uses: actions/checkout@main  
       - name: zip workflows
-        uses: vimtor/action-zip@1
+        uses: vimtor/action-zip@v1.1
         with:
           dest: ${{ github.run_id }}.zip
           files: ./logicapp/

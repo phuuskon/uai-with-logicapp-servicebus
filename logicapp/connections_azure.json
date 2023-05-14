@@ -1,0 +1,25 @@
+{
+    "managedApiConnections": {
+      "servicebus": {
+        "api": {
+          "id": "/subscriptions/@parameters('SubscriptionId')/providers/Microsoft.Web/locations/westeurope/managedApis/servicebus"
+        },
+        "connection": {
+          "id": "/subscriptions/@parameters('SubscriptionId')/resourceGroups/@parameters('ResourceGroupName')/providers/Microsoft.Web/connections/apicon-phlatest-we"
+        },
+        "connectionRuntimeUrl": "@appsetting('ServiceBusConnectionRuntimeUrl')",
+        "authentication": {
+          "type": "ManagedServiceIdentity",
+          "identity": "/subscriptions/%REPLACE_SUBSCRIPTION_ID%/resourcegroups/%REPLACE_RESOURCEGROUP_NAME%/providers/Microsoft.ManagedIdentity/userAssignedIdentities/%REPLACE_MANAGEDIDENTITY_NAME%"
+        },
+        "connectionProperties": {
+          "authentication": {
+            "audience": "https://servicebus.azure.net",
+            "type": "ManagedServiceIdentity",
+            "identity": "/subscriptions/%REPLACE_SUBSCRIPTION_ID%/resourcegroups/%REPLACE_RESOURCEGROUP_NAME%/providers/Microsoft.ManagedIdentity/userAssignedIdentities/%REPLACE_MANAGEDIDENTITY_NAME%"
+          }
+        }
+      }
+    }
+  }
+  

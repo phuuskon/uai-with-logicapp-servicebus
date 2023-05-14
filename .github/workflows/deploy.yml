@@ -64,7 +64,7 @@ jobs:
         uses: Azure/functions-action@v1
         id: la
         with:
-          app-name: ${{ sneeds.DeployInfra.outputs.laName }}
+          app-name: ${{ needs.DeployInfra.outputs.laName }}
           package: built_artifact/${{ github.run_id }}.zip
-          publish-profile: ${{steps.la_app.outputs.profile}}
+          publish-profile: ${{ steps.la_app.outputs.profile }}
       

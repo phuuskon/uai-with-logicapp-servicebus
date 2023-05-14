@@ -27,7 +27,7 @@ jobs:
         with:
           dest: ${{ github.run_id }}.zip
           files: ./logicapp/
-      - uses: actions/upload_artifact@master
+      - uses: actions/upload-artifact@master
         with:
           name: build-artifact
           path: ${{ github.run_id }}.zip

@@ -2,7 +2,7 @@ on:
   workflow_dispatch:
   
 jobs:
-  DemoDeployment:
+  DeployInfra:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
@@ -22,6 +22,9 @@ jobs:
         uses: azure/CLI@v1
         with: 
           inlineScript: az role assignment create --assignee ${{ steps.deploy_infra.outputs.miPrincipalId }} --role "Azure Service Bus Data Owner" --scope ${{ steps.deploy_infra.outputs.sbId }}
+  BuildSolution:
+    runs-on: ubuntu-latest
+    steps:    
       - name: zip workflows
         uses: vimtor/action-zip@1
         with:
@@ -31,6 +34,9 @@ jobs:
         with:
           name: build-artifact
           path: ${{ github.run_id }}.zip
+  DeploySolution:
+    runs-on: ubuntu-latest
+    steps:
       - name: get publish profile
         id: la_app
         uses: azure/powershell@v1

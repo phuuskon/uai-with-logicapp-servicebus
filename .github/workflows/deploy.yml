@@ -24,7 +24,8 @@ jobs:
           inlineScript: az role assignment create --assignee ${{ steps.deploy_infra.outputs.miPrincipalId }} --role "Azure Service Bus Data Owner" --scope ${{ steps.deploy_infra.outputs.sbId }}
   BuildSolution:
     runs-on: ubuntu-latest
-    steps:    
+    steps:  
+      - uses: actions/checkout@main  
       - name: zip workflows
         uses: vimtor/action-zip@1
         with:
@@ -37,6 +38,10 @@ jobs:
   DeploySolution:
     runs-on: ubuntu-latest
     steps:
+      - uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+          enable-AzPSSession: true
       - name: get publish profile
         id: la_app
         uses: azure/powershell@v1

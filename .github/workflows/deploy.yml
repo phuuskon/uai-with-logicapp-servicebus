@@ -1,3 +1,4 @@
+name: Deploy infra and solution
 on:
   workflow_dispatch:
   
@@ -46,15 +47,12 @@ jobs:
         with:
           creds: ${{secrets.AZURE_CREDENTIALS}}
           enable-AzPSSession: true
-      - run: echo "${{ needs.DeployInfra.outputs.laName }}"
       - name: get publish profile
         id: la_app
         uses: Azure/powershell@v1
         with:
           inlineScript: |
-            $profile = Get-AzWebAppPublishingProfile `
-              -ResourceGroupName ${{ secrets.AZURE_RG }}`
-              -Name ${{ needs.DeployInfra.outputs.laName }}
+            $profile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{ secrets.AZURE_RG }} -Name ${{ needs.DeployInfra.outputs.laName }}
             $profile = $profile.Replace("`r", "").Replace("`n", "")
             Write-Output "::set-output name=profile::$profile"
           azPSVersion: latest

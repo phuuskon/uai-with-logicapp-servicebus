@@ -34,14 +34,12 @@ jobs:
       - uses: actions/checkout@main
       - name: replace connections params
         run: |
-          SUBSCRIPTION_ID=$(${{ secrets.AZURE_SUBSCRIPTION }})
-          RESOURCEGROUP_NAME=$(${{ github.event.inputs.resourceGroupName }})
-          MANAGEDIDENTITY_NAME=$(${{ needs.DeployInfra.outputs.miName }})
-          sed -i "s/%REPLACE_SUBSCRIPTION_ID%/${SUBSCRIPTION_ID}" ./logicapp/connections_azure.json
-          sed -i "s/%REPLACE_RESOURCEGROUP_NAME%/${RESOURCEGROUP_NAME}" ./logicapp/connections_azure.json
-          sed -i "s/%REPLACE_MANAGEDIDENTITY_NAME%/${MANAGEDIDENTITY_NAME}" ./logicapp/connections_azure.json
+          sed -i "s/%REPLACE_SUBSCRIPTION_ID%/${{ secrets.AZURE_SUBSCRIPTION }}/g" ./logicapp/connections_azure.json
+          sed -i "s/%REPLACE_RESOURCEGROUP_NAME%/${{ github.event.inputs.resourceGroupName }}/g" ./logicapp/connections_azure.json
+          sed -i "s/%REPLACE_MANAGEDIDENTITY_NAME%/${{ needs.DeployInfra.outputs.miName }}/g" ./logicapp/connections_azure.json
           rm ./logicapp/connections.json
-          cp ./logicapp/connections_azure.json ./logicapp/connections.json  
+          cp ./logicapp/connections_azure.json ./logicapp/connections.json
+          more connections.json  
       - name: zip workflows
         uses: vimtor/action-zip@v1.1
         with:

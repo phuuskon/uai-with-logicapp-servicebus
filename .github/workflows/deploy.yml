@@ -1,0 +1,80 @@
+name: Deploy infra and solution
+on:
+  workflow_dispatch:
+    inputs: 
+      resourceGroupName:
+        required: true
+jobs:
+  DeployInfra:
+    runs-on: ubuntu-latest
+    outputs:
+      laName: ${{ steps.deploy_infra.outputs.laName }}
+      miName: ${{ steps.deploy_infra.outputs.miName }}
+    steps:
+      - uses: actions/checkout@main
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: deploy infra
+        id: deploy_infra
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          resourceGroupName: ${{ github.event.inputs.resourceGroupName }}
+          template: ./infra/main.bicep
+          parameters: 'location=westeurope shortLocation=we'
+          failOnStdErr: false
+      - name: give mi access to sb
+        uses: azure/CLI@v1
+        with: 
+          inlineScript: az role assignment create --assignee-object-id ${{ steps.deploy_infra.outputs.miPrincipalId }} --assignee-principal-type ServicePrincipal --role "Azure Service Bus Data Owner" --scope ${{ steps.deploy_infra.outputs.sbId }}
+  BuildSolution:
+    runs-on: ubuntu-latest
+    needs: [DeployInfra]
+    steps:  
+      - uses: actions/checkout@main
+      - name: replace connections params
+        run: |
+          sed -i "s/%REPLACE_SUBSCRIPTION_ID%/${{ secrets.AZURE_SUBSCRIPTION }}/g" ./logicapp/connections_azure.json
+          sed -i "s/%REPLACE_RESOURCEGROUP_NAME%/${{ github.event.inputs.resourceGroupName }}/g" ./logicapp/connections_azure.json
+          sed -i "s/%REPLACE_MANAGEDIDENTITY_NAME%/${{ needs.DeployInfra.outputs.miName }}/g" ./logicapp/connections_azure.json
+          rm ./logicapp/connections.json
+          cp ./logicapp/connections_azure.json ./logicapp/connections.json
+      - name: zip workflows
+        uses: vimtor/action-zip@v1.1
+        with:
+          dest: ${{ github.run_id }}.zip
+          files: logicapp/
+      - uses: actions/upload-artifact@v3.1.2
+        with:
+          name: build-artifact
+          path: ${{ github.run_id }}.zip
+  DeploySolution:
+    runs-on: ubuntu-latest
+    needs: [DeployInfra, BuildSolution]
+    steps:
+      - uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+          enable-AzPSSession: true
+      - name: get publish profile
+        id: la_app
+        uses: Azure/powershell@v1
+        with:
+          inlineScript: |
+            $profile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{ github.event.inputs.resourceGroupName }} -Name ${{ needs.DeployInfra.outputs.laName }}
+            $profile = $profile.Replace("`r", "").Replace("`n", "")
+            Write-Output "::set-output name=profile::$profile"
+          azPSVersion: latest
+      - uses: actions/download-artifact@master
+        with:
+          name: build-artifact
+          path: build-artifact/
+      - name: deploy to azure logicapp
+        uses: Azure/functions-action@v1
+        id: la
+        with:
+          app-name: ${{ needs.DeployInfra.outputs.laName }}
+          package: build-artifact/${{ github.run_id }}.zip
+          publish-profile: ${{ steps.la_app.outputs.profile }}
+      

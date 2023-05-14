@@ -50,3 +50,8 @@ module apiconAccessPolicy 'apicon-serviceBus-accessPolicies.bicep' = {
     shortLocation: shortLocation
   }
 }
+
+output miPrincipalId string = mi.outputs.principalId
+output miName string = mi.outputs.name
+output sbId string = sb.outputs.id
+output laName string = la.outputs.laName

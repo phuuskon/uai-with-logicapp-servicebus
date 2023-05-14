@@ -14,7 +14,7 @@
                     "body": {
                         "ContentData": "@{base64(triggerBody())}"
                     },
-                    "path": "/@{encodeURIComponent(encodeURIComponent('test-topics'))}/messages",
+                    "path": "/@{encodeURIComponent(encodeURIComponent('test-topic'))}/messages",
                     "queries": {
                         "systemProperties": "None"
                     }

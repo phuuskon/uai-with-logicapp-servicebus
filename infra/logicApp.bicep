@@ -31,7 +31,7 @@ resource la 'Microsoft.Web/sites@2022-09-01' = {
   location: location
   kind: 'functionapp,workflowapp'
   identity: {
-    type: 'SystemAssigned, UserAssigned'
+    type: 'UserAssigned'
     userAssignedIdentities: {
       '/subscriptions/${subscription().subscriptionId}/resourcegroups/${resourceGroup().name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${miName}': {}
     }
@@ -62,4 +62,4 @@ resource laConfig 'Microsoft.Web/sites/config@2022-09-01' = {
   }
 }
 
-output principalId string = la.identity.principalId
+output laName string = la.name

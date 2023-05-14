@@ -13,7 +13,7 @@ resource sb 'Microsoft.ServiceBus/namespaces@2021-11-01' = {
 
 resource topic 'Microsoft.ServiceBus/namespaces/topics@2021-11-01' = {
   parent: sb
-  name: 'test-topics'
+  name: 'test-topic'
 }
 
 resource sub 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2021-11-01' = {

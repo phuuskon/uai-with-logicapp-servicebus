@@ -40,7 +40,6 @@ jobs:
           sed -i "s/%REPLACE_MANAGEDIDENTITY_NAME%/${{ needs.DeployInfra.outputs.miName }}/g" ./logicapp/connections_azure.json
           rm ./logicapp/connections.json
           cp ./logicapp/connections_azure.json ./logicapp/connections.json
-          more ./logicapp/connections.json  
       - name: zip workflows
         uses: vimtor/action-zip@v1.1
         with:

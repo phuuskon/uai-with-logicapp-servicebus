@@ -46,6 +46,7 @@ jobs:
         with:
           creds: ${{secrets.AZURE_CREDENTIALS}}
           enable-AzPSSession: true
+      - run: echo "${{ needs.DeployInfra.outputs.laName }}"
       - name: get publish profile
         id: la_app
         uses: Azure/powershell@v1
